@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import fetchFlagLocation from "./fetch/fetchFlagLocation";
 import fetchFlag from "./fetch/fetchFlag";
 
@@ -17,9 +17,9 @@ export default function App() {
       setFlagLocation(flagLocationResponse);
       const theFlag = await fetchFlag(flagLocation);
       setLoading(false);
-      setTimeout(() => {
+      if (theFlag.split(" ").length === 1) {
         setFlag(theFlag);
-      }, 2000);
+      }
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -31,16 +31,29 @@ export default function App() {
   }, [captureTheFlag]);
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      setCurrentLetterIndex(currentLetterIndex + 1);
-    }, 500);
+    if (flag) {
+      const timerId = setTimeout(() => {
+        setCurrentLetterIndex(currentLetterIndex + 1);
+      }, 500);
 
-    return () => clearTimeout(timerId);
+      return () => clearTimeout(timerId);
+    }
+  }, [flag, currentLetterIndex]);
+
+  useEffect(() => {
+    listItems.current.forEach((item, index) => {
+      if (item && index < currentLetterIndex) {
+        item.style.opacity = "1";
+        item.style.fontSize = "34px";
+      }
+    });
   }, [currentLetterIndex]);
 
   const handleRef = (element, index) => {
     if (element) {
       listItems.current[index] = element;
+      element.style.opacity = "0";
+      element.style.fontSize = "144px";
     }
   };
 
@@ -50,22 +63,32 @@ export default function App() {
       ref={(element) => handleRef(element, index)}
       style={{
         fontFamily: "'courier new', 'Times New Roman', 'monospace'",
-        display: index < currentLetterIndex ? "list-item" : "none"
+        transition: "all 0.3s ease-in-out",
       }}
     >
       {letter}
     </li>
   ));
 
-  useEffect(() => {
-    listItems.current.forEach((item, index) => {
-      if (index < currentLetterIndex) {
-        item.style.fontSize = "54px";
-      } else {
-        item.style.fontSize = "14px";
-      }
-    });
-  }, [listItems, currentLetterIndex]);
-
-  return <div className="App">{loading ? "Loading..." : <ul>{list}</ul>}</div>;
+  return (
+    <div className="App">
+      {loading ? (
+        "Loading..."
+      ) : (
+        <>
+          <ul
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              listStyle: "none",
+              align: "center",
+            }}
+          >
+            {list}
+          </ul>
+        </>
+      )}
+    </div>
+  );
 }
