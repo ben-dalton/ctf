@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import fetchFlagLocation from "./lib/fetchFlagLocation";
-import fetchFlag from "./lib/fetchFlag";
+import fetchFlagLocation from "../lib/fetchFlagLocation";
+import fetchFlag from "../lib/fetchFlag";
+import ErrorBoundary from "./ErrorBoundary.js";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [flag, setFlag] = useState("");
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
 
@@ -21,8 +23,9 @@ export default function App() {
           setFlag(retrievedFlag);
         }
         setLoading(false);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
+        setError(err);
         setLoading(false);
       }
     };
@@ -71,18 +74,22 @@ export default function App() {
   ));
 
   return (
-    <div className="App" style={{ textAlign: "center" }}>
-      {loading ? (
-        "Loading..."
-      ) : (
-        <ul
-          style={{
-            listStyle: "none",
-          }}
-        >
-          {list}
-        </ul>
-      )}
-    </div>
+    <ErrorBoundary fallback={<p>An error has occurred</p>}>
+      <div className="App" style={{ textAlign: "center" }}>
+        {error ? (
+          <>An error has occurred</>
+        ) : loading ? (
+          "Loading..."
+        ) : (
+          <ul
+            style={{
+              listStyle: "none",
+            }}
+          >
+            {list}
+          </ul>
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }
