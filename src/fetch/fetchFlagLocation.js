@@ -27,7 +27,6 @@ const fetchFlagLocation = async () => {
       }
     });
   }
-  console.log(flagLocation);
 
   return flagLocation;
 };

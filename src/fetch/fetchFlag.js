@@ -6,7 +6,6 @@ const fetchFlag = async (flagLocation) => {
   const flagHTML = parser.parseFromString(flagLocationResponse, "text/html");
 
   const theFlag = flagHTML.querySelector("body").innerText;
-  console.log(theFlag);
   return theFlag;
 };
 
