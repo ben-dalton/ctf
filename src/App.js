@@ -12,11 +12,16 @@ export default function App() {
 
   const captureTheFlag = useCallback(async () => {
     setLoading(true);
+
     try {
+      // Decode the url to complete step 2 with fetchFlagLocation
       const flagLocationResponse = await fetchFlagLocation();
       setFlagLocation(flagLocationResponse);
+      // Retrieve the flag
       const theFlag = await fetchFlag(flagLocation);
       setLoading(false);
+
+      // Make sure the flag meets the requirement of a single word
       if (theFlag.split(" ").length === 1) {
         setFlag(theFlag);
       }
@@ -62,8 +67,8 @@ export default function App() {
       key={index}
       ref={(element) => handleRef(element, index)}
       style={{
-        fontFamily: "'courier new', 'Times New Roman', 'monospace'",
-        transition: "all 0.3s ease-in-out",
+        fontFamily: "'Courier New', 'Times New Roman', 'monospace'",
+        transition: "all 0.15s ease-in-out",
       }}
     >
       {letter}
@@ -75,19 +80,17 @@ export default function App() {
       {loading ? (
         "Loading..."
       ) : (
-        <>
-          <ul
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              listStyle: "none",
-              align: "center",
-            }}
-          >
-            {list}
-          </ul>
-        </>
+        <ul
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            listStyle: "none",
+            align: "center",
+          }}
+        >
+          {list}
+        </ul>
       )}
     </div>
   );
