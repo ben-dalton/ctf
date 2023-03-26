@@ -19,7 +19,7 @@ const fetchFlagLocation = async () => {
           if (marker3) {
             const flagElement = marker3.querySelector("p.flag");
             if (flagElement && flagElement.hasAttribute("value")) {
-              let flagValue = flagElement.getAttribute("value");
+              const flagValue = flagElement.getAttribute("value");
               flagLocation += flagValue;
             }
           }

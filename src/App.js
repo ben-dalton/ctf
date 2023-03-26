@@ -1,39 +1,34 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import fetchFlagLocation from "./fetch/fetchFlagLocation";
-import fetchFlag from "./fetch/fetchFlag";
+import React, { useEffect, useRef, useState } from "react";
+import fetchFlagLocation from "./lib/fetchFlagLocation";
+import fetchFlag from "./lib/fetchFlag";
 
 export default function App() {
-  const [loading, setLoading] = useState(false);
-  const [flagLocation, setFlagLocation] = useState("");
+  const [loading, setLoading] = useState(true);
   const [flag, setFlag] = useState("");
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
 
   const listItems = useRef([]);
 
-  const captureTheFlag = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      // Decode the url to complete step 2 with fetchFlagLocation
-      const flagLocationResponse = await fetchFlagLocation();
-      setFlagLocation(flagLocationResponse);
-      // Retrieve the flag
-      const theFlag = await fetchFlag(flagLocation);
-      setLoading(false);
-
-      // Make sure the flag meets the requirement of a single word
-      if (theFlag.split(" ").length === 1) {
-        setFlag(theFlag);
-      }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [flagLocation]);
-
   useEffect(() => {
+    const captureTheFlag = async () => {
+      try {
+        // Decode the url to complete step 2 with fetchFlagLocation
+        const flagLocationResponse = await fetchFlagLocation();
+        // Retrieve the flag
+        const retrievedFlag = await fetchFlag(flagLocationResponse);
+        // Make sure the flag meets the requirement of a single word
+        if (retrievedFlag.split(" ").length === 1) {
+          setFlag(retrievedFlag);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+
     captureTheFlag();
-  }, [captureTheFlag]);
+  }, []);
 
   useEffect(() => {
     if (flag) {
@@ -76,17 +71,13 @@ export default function App() {
   ));
 
   return (
-    <div className="App">
+    <div className="App" style={{ textAlign: "center" }}>
       {loading ? (
         "Loading..."
       ) : (
         <ul
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
             listStyle: "none",
-            align: "center",
           }}
         >
           {list}
