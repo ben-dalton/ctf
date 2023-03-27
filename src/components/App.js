@@ -77,7 +77,7 @@ export default function App() {
     <ErrorBoundary fallback={<p>An error has occurred</p>}>
       <div className="App" style={{ textAlign: "center" }}>
         {error ? (
-          <>An error has occurred</>
+          <p>{error.message || "An error has occurred"}</p>
         ) : loading ? (
           "Loading..."
         ) : (
