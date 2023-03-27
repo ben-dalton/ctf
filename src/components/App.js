@@ -1,14 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import fetchFlagLocation from "../lib/fetchFlagLocation";
 import fetchFlag from "../lib/fetchFlag";
+import LetterList from "./LetterList";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [flag, setFlag] = useState("");
-  const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
-
-  const listItems = useRef([]);
 
   useEffect(() => {
     const captureTheFlag = async () => {
@@ -32,46 +30,6 @@ export default function App() {
     captureTheFlag();
   }, []);
 
-  useEffect(() => {
-    if (flag) {
-      const timerId = setTimeout(() => {
-        setCurrentLetterIndex(currentLetterIndex + 1);
-      }, 500);
-
-      return () => clearTimeout(timerId);
-    }
-  }, [flag, currentLetterIndex]);
-
-  useEffect(() => {
-    listItems.current.forEach((item, index) => {
-      if (item && index < currentLetterIndex) {
-        item.style.opacity = "1";
-        item.style.fontSize = "34px";
-      }
-    });
-  }, [currentLetterIndex]);
-
-  const handleRef = (element, index) => {
-    if (element) {
-      listItems.current[index] = element;
-      element.style.opacity = "0";
-      element.style.fontSize = "144px";
-    }
-  };
-
-  const list = Array.from(flag).map((letter, index) => (
-    <li
-      key={index}
-      ref={(element) => handleRef(element, index)}
-      style={{
-        fontFamily: "'Courier New', 'Times New Roman', 'monospace'",
-        transition: "all 0.15s ease-in-out",
-      }}
-    >
-      {letter}
-    </li>
-  ));
-
   return (
     <div className="App" style={{ textAlign: "center" }}>
       {error ? (
@@ -79,13 +37,7 @@ export default function App() {
       ) : loading ? (
         "Loading..."
       ) : (
-        <ul
-          style={{
-            listStyle: "none",
-          }}
-        >
-          {list}
-        </ul>
+        <LetterList letters={flag} />
       )}
     </div>
   );
