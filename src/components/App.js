@@ -12,9 +12,9 @@ export default function App() {
     const captureTheFlag = async () => {
       try {
         // Decode the url to complete step 2 with fetchFlagLocation
-        const flagLocationResponse = await fetchFlagLocation();
+        const flagLocation = await fetchFlagLocation();
         // Retrieve the flag
-        const retrievedFlag = await fetchFlag(flagLocationResponse);
+        const retrievedFlag = await fetchFlag(flagLocation);
         // Make sure the flag meets the requirement of a single word
         if (retrievedFlag.split(" ").length === 1) {
           setFlag(retrievedFlag);
@@ -31,7 +31,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="App" style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center" }}>
       {error ? (
         <p>{error.message || "An error has occurred"}</p>
       ) : loading ? (
